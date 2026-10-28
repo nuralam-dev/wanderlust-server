@@ -41,7 +41,29 @@ app.get("/destination", async (req, res) => {
 app.get("/destination/:id", async (req, res) => {
   const { id } = req.params;
   const result = await destinationCollection.findOne({ _id: new ObjectId(id) });
-  console.log(id)
+  console.log(id);
+  res.send(result);
+});
+
+// update from the destination details edit page.
+// _id comes back in req.body, and must not be overwritten.
+app.put("/destination/:id", async (req, res) => {
+  const { id } = req.params;
+  const { _id, ...data } = req.body;
+  const result = await destinationCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: data },
+    { returnDocument: "after" },
+  );
+  res.send(result);
+});
+
+// delete from the destination details page.
+app.delete("/destination/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await destinationCollection.findOneAndDelete({
+    _id: new ObjectId(id),
+  });
   res.send(result);
 });
 
